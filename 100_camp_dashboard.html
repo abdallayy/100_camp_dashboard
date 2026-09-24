@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>معسكر الـ 100% | لوحة تحكم الثانوية العامة</title>
+    <!-- Google Fonts: Cairo & Tajawal -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#090d16',
+                        cardBg: 'rgba(19, 27, 46, 0.75)',
+                        cardBorder: 'rgba(255, 255, 255, 0.08)',
+                        neonEmerald: '#10b981',
+                        neonCyan: '#06b6d4',
+                        neonAmber: '#f59e0b',
+                        neonRose: '#f43f5e',
+                        neonPurple: '#a855f7'
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                        tajawal: ['Tajawal', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #090d16;
+            background-image: 
+                radial-gradient(at 10% 10%, rgba(6, 182, 212, 0.08) 0px, transparent 50%),
+                radial-gradient(at 90% 90%, rgba(16, 185, 129, 0.08) 0px, transparent 50%),
+                radial-gradient(at 50% 50%, rgba(168, 85, 247, 0.05) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: #f3f4f6;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .glass-panel {
+            background: rgba(19, 27, 46, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-input {
+            background: rgba(10, 15, 29, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #f3f4f6;
+        }
+
+        .glass-input:focus {
+            border-color: #06b6d4;
+            outline: none;
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
+        }
+
+        .glow-cyan { box-shadow: 0 0 15px rgba(6, 182, 212, 0.3); }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090d16;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #06b6d4;
+        }
+
+        .task-checkbox:checked + label {
+            text-decoration: line-through;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col pb-10">
+
+    <header class="sticky top-0 z-50 glass-panel border-b border-slate-800/80 px-4 py-3 mb-6">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <!-- Logo & Title -->
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-cyan-500 to-emerald-400 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg glow-cyan">
+                    100
+                </div>
+                <div>
+                    <h1 class="text-xl font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-emerald-300 to-amber-300">
+                        معسكر الـ 100% الصارم
+                    </h1>
+                    <p class="text-xs text-slate-400 font-tajawal">ثانوية عامة | لا مكان للصدفة، العصر هو الحل</p>
+                </div>
+            </div>
+
+            <!-- JSON Backup Buttons & Day Counter -->
+            <div class="flex items-center gap-3">
+                <!-- Backup JSON Actions -->
+                <div class="flex items-center gap-2 border-l border-slate-800 pl-3">
+                    <button onclick="exportToJSON()" class="px-2.5 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 text-xs flex items-center gap-1.5 transition font-bold" title="تحميل ملف JSON للنسخ الاحتياطي">
+                        <i class="fa-solid fa-download"></i>
+                        <span class="hidden sm:inline">حفظ JSON</span>
+                    </button>
+                    <button onclick="document.getElementById('importJsonFile').click()" class="px-2.5 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500 hover:text-slate-950 text-xs flex items-center gap-1.5 transition font-bold" title="استرجاع بيانات من ملف JSON">
+                        <i class="fa-solid fa-upload"></i>
+                        <span class="hidden sm:inline">استرجاع JSON</span>
+                    </button>
+                    <input type="file" id="importJsonFile" accept=".json" class="hidden" onchange="importFromJSON(event)" />
+                </div>
+
+                <!-- Day Counter -->
+                <div class="flex items-center gap-3 bg-slate-900/90 border border-slate-800 px-3 py-1.5 rounded-xl">
+                    <div class="text-center">
+                        <span class="text-[10px] text-slate-400 block">اليوم الحالي</span>
+                        <div class="flex items-center gap-1 font-bold text-emerald-400 text-xs">
+                            <i class="fa-solid fa-fire text-amber-500 animate-pulse"></i>
+                            <span>اليوم <span id="campDayDisplay">1</span> من 30</span>
+                        </div>
+                    </div>
+                    <div class="h-6 w-px bg-slate-800"></div>
+                    <div class="flex items-center gap-1">
+                        <button onclick="changeCampDay(-1)" class="w-6 h-6 rounded-lg bg-slate-800 hover:bg-slate-700 text-[10px] flex items-center justify-center transition">
+                            <i class="fa-solid fa-minus"></i>
+                        </button>
+                        <button onclick="changeCampDay(1)" class="w-6 h-6 rounded-lg bg-slate-800 hover:bg-slate-700 text-[10px] flex items-center justify-center transition">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <nav class="flex items-center gap-1 bg-slate-900/80 p-1.5 rounded-xl border border-slate-800 overflow-x-auto max-w-full">
+                <button onclick="switchTab('dashboard')" id="tab-dashboard" class="nav-btn px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 shadow-md">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>الرئيسية</span>
+                </button>
+                <button onclick="switchTab('schedule')" id="tab-schedule" class="nav-btn px-3 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white hover:bg-slate-800 transition flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>الجدول والمهام</span>
+                </button>
+                <button onclick="switchTab('calculator')" id="tab-calculator" class="nav-btn px-3 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white hover:bg-slate-800 transition flex items-center gap-2">
+                    <i class="fa-solid fa-calculator"></i>
+                    <span>حاسبة الأداء</span>
+                </button>
+                <button onclick="switchTab('journal')" id="tab-journal" class="nav-btn px-3 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white hover:bg-slate-800 transition flex items-center gap-2">
+                    <i class="fa-solid fa-book-bookmark"></i>
+                    <span>كشكول الأغلاط</span>
+                </button>
+                <button onclick="switchTab('recall')" id="tab-recall" class="nav-btn px-3 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white hover:bg-slate-800 transition flex items-center gap-2">
+                    <i class="fa-solid fa-brain"></i>
+                    <span>الاستدعاء النشط</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 flex-1 w-full">
+
+        <!-- ==================== TAB 1: DASHBOARD ==================== -->
+        <section id="view-dashboard" class="tab-content space-y-6">
+            
+            <!-- Strict Camp Banner -->
+            <div class="glass-panel rounded-2xl p-6 relative overflow-hidden border-r-4 border-r-rose-500">
+                <div class="absolute -left-10 -bottom-10 opacity-10 pointer-events-none text-rose-500">
+                    <i class="fa-solid fa-bullseye text-9xl"></i>
+                </div>
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative z-10">
+                    <div>
+                        <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30 mb-2">
+                            <i class="fa-solid fa-triangle-exclamation ml-1"></i> وضع المعسكر الصارم مفرّع
+                        </span>
+                        <h2 class="text-2xl font-black text-white">"النتيجة مش بالوقت.. النتيجة بعدد الأسئلة والعصر!"</h2>
+                        <p class="text-sm text-slate-300 mt-1 font-tajawal">ممنوع التسويف، ممنوع "أفصل بالفيسبوك". الحل اليومي هو وسيلتك الوحيدة للـ 100%.</p>
+                    </div>
+                    <div class="w-full md:w-auto flex items-center justify-end gap-3">
+                        <button onclick="switchTab('schedule')" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black text-sm shadow-lg transition flex items-center gap-2">
+                            <i class="fa-solid fa-list-check"></i>
+                            <span>ابدأ مهام اليوم</span>
+                        </button>
+                    </div>
+                </div>
+                <!-- Progress bar -->
+                <div class="mt-4 pt-4 border-t border-slate-800">
+                    <div class="flex justify-between text-xs font-bold mb-1">
+                        <span class="text-slate-400">تقدم المعسكر (30 يوماً)</span>
+                        <span class="text-emerald-400" id="campProgressPercent">3.3%</span>
+                    </div>
+                    <div class="w-full h-2.5 bg-slate-900 rounded-full overflow-hidden border border-slate-800">
+                        <div id="campProgressBar" class="h-full bg-gradient-to-r from-cyan-500 via-emerald-400 to-amber-400 transition-all duration-500" style="width: 3.3%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metric Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Solved Today -->
+                <div class="glass-panel p-5 rounded-2xl flex items-center justify-between relative">
+                    <div>
+                        <span class="text-xs font-bold text-slate-400 block mb-1">أسئلة محلولة اليوم</span>
+                        <h3 class="text-3xl font-black text-white" id="dashQuestionsToday">0</h3>
+                        <p class="text-xs text-slate-400 mt-1">الهدف: <span class="text-cyan-400 font-bold">100 سؤال/يوم</span></p>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-pen-ruler"></i>
+                    </div>
+                </div>
+
+                <!-- Accuracy Rate -->
+                <div class="glass-panel p-5 rounded-2xl flex items-center justify-between">
+                    <div>
+                        <span class="text-xs font-bold text-slate-400 block mb-1">معدل الدقة اليومي</span>
+                        <h3 class="text-3xl font-black text-emerald-400" id="dashAccuracyToday">0%</h3>
+                        <p class="text-xs text-slate-400 mt-1">حد الأمان: <span class="text-emerald-400 font-bold">&gt; 80%</span></p>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-bullseye"></i>
+                    </div>
+                </div>
+
+                <!-- Active Mistakes -->
+                <div class="glass-panel p-5 rounded-2xl flex items-center justify-between">
+                    <div>
+                        <span class="text-xs font-bold text-slate-400 block mb-1">أغلاط تنتظر المراجعة</span>
+                        <h3 class="text-3xl font-black text-rose-400" id="dashMistakesCount">0</h3>
+                        <p class="text-xs text-slate-400 mt-1">في كشكول الأغلاط</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-bug"></i>
+                    </div>
+                </div>
+
+                <!-- Gym Split Today -->
+                <div class="glass-panel p-5 rounded-2xl flex items-center justify-between">
+                    <div>
+                        <span class="text-xs font-bold text-slate-400 block mb-1">تمرين الجيم اليوم</span>
+                        <h3 class="text-lg font-bold text-amber-300 truncate max-w-[140px]" id="dashGymSplit">راحة / استشفاء</h3>
+                        <p class="text-xs text-slate-400 mt-1">نظام أرنولد الشاق</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-dumbbell"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daily Overview Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Today's Schedule Overview -->
+                <div class="lg:col-span-2 glass-panel p-6 rounded-2xl">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-bold text-lg text-white flex items-center gap-2">
+                            <i class="fa-solid fa-clock text-cyan-400"></i>
+                            <span>جدول دروسك ومهامك اليوم (<span id="todayNameDisplay">الجمعة</span>)</span>
+                        </h3>
+                        <button onclick="switchTab('schedule')" class="text-xs text-cyan-400 hover:underline">عرض الأسبوع كامل</button>
+                    </div>
+
+                    <div id="dashboardDailyTasks" class="space-y-3">
+                        <!-- Dynamic injection of today's tasks -->
+                    </div>
+                </div>
+
+                <!-- Rules of 100% Quick Reference -->
+                <div class="glass-panel p-6 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-lg text-amber-300 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            <span>قوانين المعسكر الصارم</span>
+                        </h3>
+                        <ul class="space-y-3 text-xs text-slate-300 font-tajawal">
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-check text-emerald-400 mt-0.5"></i>
+                                <span><strong>80% حل و20% قراءة:</strong> المذاكرة بالحل المباشر وعصر الدماغ.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-check text-emerald-400 mt-0.5"></i>
+                                <span><strong>حد الغلط 20%:</strong> لو زاد عن 40% اقفل الكتاب وارجع اسمع الشرح.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-check text-emerald-400 mt-0.5"></i>
+                                <span><strong>كشكول الأغلاط:</strong> كل سؤال تغلط فيه يتسجل بـ (الفخ والـ Bug والقاعدة).</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-check text-emerald-400 mt-0.5"></i>
+                                <span><strong>لا تسويف:</strong> يومك يخلص لما مهامك تخلص حتى لو على حساب وقت نومك.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-slate-800">
+                        <button onclick="openLogSessionModal()" class="w-full py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs transition shadow-lg flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-plus-circle"></i>
+                            <span>تسجيل جلسة حل جديدة الآن</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==================== TAB 2: SMART SCHEDULE ==================== -->
+        <section id="view-schedule" class="tab-content hidden space-y-6">
+            <!-- Day Selector Bar -->
+            <div class="glass-panel p-3 rounded-2xl flex items-center gap-2 overflow-x-auto">
+                <button onclick="selectScheduleDay('friday')" id="sday-friday" class="sday-btn flex-1 min-w-[100px] py-2.5 px-3 rounded-xl text-xs font-bold transition text-center bg-cyan-500 text-slate-950 shadow-md">
+                    الجمعة
+                </button>
+                <button onclick="selectScheduleDay('saturday')" id="sday-saturday" class="sday-btn flex-1 min-w-[100px] py-2.5 px-3 rounded-xl text-xs font-bold transition text-center text-slate-400 hover:bg-slate-800">
+                    السبت
+                </button>
+                <button onclick="selectScheduleDay('sunday')" id="sday-sunday" class="sday-btn flex-1 min-w-[100px] py-2.5 px-3 rounded-xl text-xs font-bold transition text-center text-slate-400 hover:bg-slate-800">
+                    الأحد
+                </button>
+                <button onclick="selectScheduleDay('monday')" id="sday-monday" class="sday-btn flex-1 min-w-[100px] py-2.5 px-3 rounded-xl text-xs font-bold transition text-center text-slate-400 hover:bg-slate-800">
+                    الإثنين
+                </button>
+                <button onclick="selectScheduleDay('tuesday')" id="sday-tuesday" class="sday-btn flex-1 min-w-[100px] py-2.5 px-3 rounded-xl text-xs font-bold transition text-center text-slate-400 hover:bg-slate-800">
+                    الثلاثاء
+                </button>
+                <button onclick="selectScheduleDay('wednesday')" id="sday-wednesday" class="sday-btn flex-1 min-w-[100px] py-2.5 px-3 rounded-xl text-xs font-bold transition text-center text-slate-400 hover:bg-slate-800">
+                    الأربعاء
+                </button>
+                <button onclick="selectScheduleDay('thursday')" id="sday-thursday" class="sday-btn flex-1 min-w-[100px] py-2.5 px-3 rounded-xl text-xs font-bold transition text-center text-slate-400 hover:bg-slate-800">
+                    الخميس
+                </button>
+            </div>
+
+            <!-- Selected Day Info Box -->
+            <div class="glass-panel p-6 rounded-2xl border-l-4 border-l-cyan-400 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h3 class="text-xl font-black text-white" id="selectedDayTitle">خطة يوم الجمعة</h3>
+                    <p class="text-xs text-slate-300 mt-1 font-tajawal" id="selectedDayLessons">الدروس: كيمياء (2:30 - 7:00) | الجيم: يوم راحة</p>
+                </div>
+                <button onclick="openAddTaskModal()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-bold text-cyan-400 transition flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>إضافة مهمة خاصة لهذا اليوم</span>
+                </button>
+            </div>
+
+            <!-- Periods Tasks Columns -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Dawn Period -->
+                <div class="glass-panel p-5 rounded-2xl">
+                    <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-800">
+                        <h4 class="font-bold text-amber-300 flex items-center gap-2">
+                            <i class="fa-solid fa-sun"></i>
+                            <span>فترة الفجر والصباح (6 ص - 1 ظ)</span>
+                        </h4>
+                    </div>
+                    <div id="tasks-dawn" class="space-y-3">
+                        <!-- Tasks inject here -->
+                    </div>
+                </div>
+
+                <!-- Noon Period -->
+                <div class="glass-panel p-5 rounded-2xl">
+                    <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-800">
+                        <h4 class="font-bold text-cyan-400 flex items-center gap-2">
+                            <i class="fa-solid fa-dumbbell"></i>
+                            <span>الظهر والدروس والجيم (2 ظ - 7 م)</span>
+                        </h4>
+                    </div>
+                    <div id="tasks-noon" class="space-y-3">
+                        <!-- Tasks inject here -->
+                    </div>
+                </div>
+
+                <!-- Night Period -->
+                <div class="glass-panel p-5 rounded-2xl">
+                    <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-800">
+                        <h4 class="font-bold text-rose-400 flex items-center gap-2">
+                            <i class="fa-solid fa-moon"></i>
+                            <span>فترة الليل والفرم (8 م حتى الإنهاء)</span>
+                        </h4>
+                    </div>
+                    <div id="tasks-night" class="space-y-3">
+                        <!-- Tasks inject here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==================== TAB 3: CALCULATOR ==================== -->
+        <section id="view-calculator" class="tab-content hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- Calculator Form -->
+                <div class="glass-panel p-6 rounded-2xl lg:col-span-1">
+                    <h3 class="text-lg font-black text-white mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-calculator text-cyan-400"></i>
+                        <span>حاسبة تقييم الأداء والخلل</span>
+                    </h3>
+                    <p class="text-xs text-slate-400 font-tajawal mb-6">سجل بعد كل جلسة حل لتعرف فوراً هل استوعبت الدرس أم تحتاج وقف الشرح والحل.</p>
+
+                    <form id="calcForm" onsubmit="calculatePerformance(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 mb-1">المادة</label>
+                            <select id="calcSubject" class="w-full p-3 rounded-xl glass-input text-xs font-bold" required>
+                                <option value="كيمياء">كيمياء</option>
+                                <option value="فيزياء">فيزياء</option>
+                                <option value="رياضيات">رياضيات</option>
+                                <option value="اللغة العربية">اللغة العربية</option>
+                                <option value="اللغة الإنجليزية">اللغة الإنجليزية</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 mb-1">إجمالي الأسئلة المحلولة</label>
+                            <input type="number" id="calcTotal" min="1" placeholder="مثال: 50" class="w-full p-3 rounded-xl glass-input text-xs" required />
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 mb-1">عدد الإجابات الخاطئة</label>
+                            <input type="number" id="calcWrong" min="0" placeholder="مثال: 8" class="w-full p-3 rounded-xl glass-input text-xs" required />
+                        </div>
+
+                        <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-slate-950 font-black text-xs transition shadow-lg">
+                            عصر وتقييم الجلسة
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Result Diagnostic Banner & History -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Diagnostic Display Box -->
+                    <div id="calcResultBox" class="glass-panel p-6 rounded-2xl hidden border-l-4">
+                        <div class="flex items-start gap-4">
+                            <div id="resultIcon" class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shrink-0"></div>
+                            <div>
+                                <span id="resultBadge" class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2"></span>
+                                <h3 id="resultTitle" class="text-xl font-black text-white"></h3>
+                                <p id="resultMessage" class="text-xs text-slate-300 mt-2 font-tajawal leading-relaxed"></p>
+                                <div class="mt-4 flex items-center gap-6 text-xs font-bold">
+                                    <span>نسبة الدقة: <span id="resAccuracyVal" class="text-cyan-400">0%</span></span>
+                                    <span>نسبة الغلط: <span id="resErrorVal" class="text-rose-400">0%</span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sessions History List -->
+                    <div class="glass-panel p-6 rounded-2xl">
+                        <h4 class="font-bold text-white text-sm mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-history text-slate-400"></i>
+                            <span>سجل جلسات الحل اليومية</span>
+                        </h4>
+                        <div id="sessionsHistoryList" class="space-y-3 max-h-[350px] overflow-y-auto pr-1">
+                            <!-- Injected history -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ==================== TAB 4: MISTAKE JOURNAL ==================== -->
+        <section id="view-journal" class="tab-content hidden space-y-6">
+            <!-- Header & Action Bar -->
+            <div class="glass-panel p-6 rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div>
+                    <h3 class="text-xl font-black text-white flex items-center gap-2">
+                        <i class="fa-solid fa-book-bookmark text-rose-400"></i>
+                        <span>كشكول الأغلاط الرقمي (Mistake Journal)</span>
+                    </h3>
+                    <p class="text-xs text-slate-300 mt-1 font-tajawal">هنا بيتم هندسة أخطائك وتصليح تفكيرك (Debugging) عشان متقعش فيها تاني في الامتحان.</p>
+                </div>
+                <div class="flex items-center gap-3 w-full md:w-auto">
+                    <button onclick="openAddMistakeModal()" class="w-full md:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-400 hover:to-amber-400 text-slate-950 font-black text-xs transition shadow-lg flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-plus-circle"></i>
+                        <span>تسجيل غلطة جديدة</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="glass-panel p-4 rounded-2xl flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-2 overflow-x-auto w-full md:w-auto">
+                    <span class="text-xs font-bold text-slate-400 shrink-0">تصفية حسب:</span>
+                    <button onclick="filterMistakes('all')" id="mfilter-all" class="mfilter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-cyan-500 text-slate-950">الكل</button>
+                    <button onclick="filterMistakes('كيمياء')" id="mfilter-كيمياء" class="mfilter-btn px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:bg-slate-800">كيمياء</button>
+                    <button onclick="filterMistakes('فيزياء')" id="mfilter-فيزياء" class="mfilter-btn px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:bg-slate-800">فيزياء</button>
+                    <button onclick="filterMistakes('رياضيات')" id="mfilter-رياضيات" class="mfilter-btn px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:bg-slate-800">رياضيات</button>
+                    <button onclick="filterMistakes('اللغة العربية')" id="mfilter-اللغة العربية" class="mfilter-btn px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:bg-slate-800">عربي</button>
+                    <button onclick="filterMistakes('اللغة الإنجليزية')" id="mfilter-اللغة الإنجليزية" class="mfilter-btn px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:bg-slate-800">إنجليزي</button>
+                </div>
+            </div>
+
+            <!-- Mistakes Grid -->
+            <div id="mistakesGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Injected mistake cards -->
+            </div>
+        </section>
+
+
+        <!-- ==================== TAB 5: ACTIVE RECALL & TIMER ==================== -->
+        <section id="view-recall" class="tab-content hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- Active Recall Focus Timer (Extended max sessions) -->
+                <div class="glass-panel p-6 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-lg font-black text-white mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-stopwatch text-amber-400"></i>
+                            <span>مؤقت الجلسات الطويلة (Deep Work)</span>
+                        </h3>
+                        <p class="text-xs text-slate-400 font-tajawal mb-6">اختر الجلسة المناسبة لفرك المادة بدون مقاطعة.</p>
+
+                        <!-- Long Timer Presets -->
+                        <div class="grid grid-cols-3 gap-2 mb-6">
+                            <button onclick="setTimerPreset(90)" class="py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-cyan-400 border border-cyan-500/20">90 دقيقة (ساعة ونصف)</button>
+                            <button onclick="setTimerPreset(120)" class="py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-amber-300 border border-amber-500/30">120 دقيقة (ساعتان)</button>
+                            <button onclick="setTimerPreset(180)" class="py-2.5 rounded-xl bg-gradient-to-r from-purple-900/50 to-rose-900/50 hover:from-purple-800 hover:to-rose-800 text-xs font-bold text-rose-300 border border-rose-500/40">180 دقيقة (3 ساعات ماراثون)</button>
+                        </div>
+
+                        <!-- Timer Circle / Display -->
+                        <div class="my-8 text-center">
+                            <div class="text-5xl font-black text-white tracking-wider font-mono bg-slate-900/80 py-4 px-2 rounded-2xl border border-slate-800 shadow-inner" id="timerDisplay">03:00:00</div>
+                            <span class="text-xs text-amber-400 font-bold mt-3 block" id="timerStatus">جلسة ماراثون 3 ساعات جاهزة للبدء</span>
+                        </div>
+                    </div>
+
+                    <!-- Timer Controls -->
+                    <div class="flex items-center gap-3">
+                        <button id="btnStartTimer" onclick="toggleTimer()" class="flex-1 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition shadow-lg flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-play"></i>
+                            <span>ابدأ الجلسة الشاقة</span>
+                        </button>
+                        <button onclick="resetTimer()" class="w-12 h-12 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition">
+                            <i class="fa-solid fa-rotate-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Feynman Active Recall Scratchpad -->
+                <div class="lg:col-span-2 glass-panel p-6 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-black text-white flex items-center gap-2">
+                                <i class="fa-solid fa-brain text-cyan-400"></i>
+                               <span>مسودة عصر الدماغ (Feynman Scratchpad)</span>
+                            </h3>
+                            <button onclick="clearScratchpad()" class="text-xs text-rose-400 hover:underline">مسح الكل</button>
+                        </div>
+                        <p class="text-xs text-slate-400 font-tajawal mb-4">
+                            اقفل الملزمة، واكتب هنا كل المعلومات والقوانين والملاحظات اللي تقدر تستدعيها من ذاكرتك فوراً بدون النظر للكتاب.
+                        </p>
+                        
+                        <textarea id="recallScratchpad" oninput="saveScratchpad()" placeholder="ابدأ الكتابة والاستدعاء فوراً... (مثال: قوانين كيرشوف، أفكار المسائل، ملاحظات الأستاذ...)" class="w-full h-[320px] p-4 rounded-xl glass-input font-tajawal text-sm leading-relaxed resize-none"></textarea>
+                    </div>
+
+                    <div class="mt-4 flex items-center justify-between text-xs text-slate-400">
+                        <span>يتم الحفظ تلقائياً على جهازك</span>
+                        <button onclick="copyScratchpadText()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-400 font-bold transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-copy"></i>
+                            <span>نسخ النص</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+
+    <!-- MODAL: Add Custom Task -->
+    <div id="modalAddTask" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="glass-panel max-w-md w-full p-6 rounded-2xl border border-slate-700 shadow-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-white text-base">إضافة مهمة جديدة</h3>
+                <button onclick="closeAddTaskModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="handleAddNewTask(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">فترة اليوم</label>
+                    <select id="newTaskPeriod" class="w-full p-3 rounded-xl glass-input text-xs" required>
+                        <option value="dawn">الفجر والصباح (6 ص - 1 ظ)</option>
+                        <option value="noon">الظهر والدروس والجيم (2 ظ - 7 م)</option>
+                        <option value="night">الليل والفرم (8 م حتى النهاية)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">عنوان المهمة</label>
+                    <input type="text" id="newTaskText" placeholder="مثال: حل 30 سؤال ميكس كيمياء" class="w-full p-3 rounded-xl glass-input text-xs" required />
+                </div>
+                <button type="submit" class="w-full py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs transition">إضافة المهمة</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: Add Mistake Entry -->
+    <div id="modalAddMistake" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
+        <div class="glass-panel max-w-lg w-full p-6 rounded-2xl border border-slate-700 shadow-2xl my-8">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-white text-base flex items-center gap-2">
+                    <i class="fa-solid fa-bug text-rose-400"></i>
+                    <span>تسجيل غلطة في الكشكول</span>
+                </h3>
+                <button onclick="closeAddMistakeModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="handleAddNewMistake(event)" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 mb-1">المادة</label>
+                        <select id="mSubj" class="w-full p-3 rounded-xl glass-input text-xs" required>
+                            <option value="كيمياء">كيمياء</option>
+                            <option value="فيزياء">فيزياء</option>
+                            <option value="رياضيات">رياضيات</option>
+                            <option value="اللغة العربية">اللغة العربية</option>
+                            <option value="اللغة الإنجليزية">اللغة الإنجليزية</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 mb-1">نوع الغلطة (التصنيف)</label>
+                        <select id="mCategory" class="w-full p-3 rounded-xl glass-input text-xs" required>
+                            <option value="تسرع/حسابات">تسرع / حسابات (Syntax Error)</option>
+                            <option value="فكرة جديدة">فكرة جديدة / فخ (Logic Error)</option>
+                            <option value="قانون/أساس ناسي">قانون أو أساس مفقود (Missing Data)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">مصدر السؤال / وصفه</label>
+                    <input type="text" id="mSource" placeholder="مثال: كتاب الامتحان ص 45 سؤال 12" class="w-full p-3 rounded-xl glass-input text-xs" required />
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-amber-300 mb-1">1. الفخ (The Trap)</label>
+                    <input type="text" id="mTrap" placeholder="إيه الكلمة المستخبية اللي بتقلب المعنى؟ (مثلاً: قبل غلق المفتاح)" class="w-full p-3 rounded-xl glass-input text-xs" required />
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-rose-400 mb-1">2. تفكيري الغلط (The Bug)</label>
+                    <textarea id="mBug" placeholder="ليه اختارت الإجابة الغلط؟" class="w-full p-3 rounded-xl glass-input text-xs h-20" required></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-emerald-400 mb-1">3. القاعدة الذهبية (The Golden Patch)</label>
+                    <textarea id="mGolden" placeholder="القاعدة اللي هتتحفر في دماغك للامتحان" class="w-full p-3 rounded-xl glass-input text-xs h-20" required></textarea>
+                </div>
+
+                <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-rose-500 to-amber-500 text-slate-950 font-black text-xs transition">
+                    حفظ في كشكول الأغلاط
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: Quick Toast Replacement -->
+    <div id="toastMessage" class="fixed bottom-6 left-6 z-50 glass-panel border border-cyan-500 px-5 py-3 rounded-xl text-xs font-bold text-white shadow-2xl flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <i class="fa-solid fa-circle-check text-cyan-400 text-base" id="toastIcon"></i>
+        <span id="toastText">تم تنفيذ العملية بنجاح!</span>
+    </div>
+
+
+    <script>
+        /* Global Data State */
+        const DEFAULT_SCHEDULE = {
+            friday: {
+                title: "خطة يوم الجمعة",
+                lessons: "درس كيمياء (2:30 - 7:00) | الجيم: يوم راحة",
+                gym: "يوم راحة استشفاء",
+                dawn: [
+                    { id: 'f1', text: 'امتحان أسبوعي شامل على ما تم دراسته طوال الأسبوع', done: false },
+                    { id: 'f2', text: 'حل 50 سؤال متراكم على المنهج القديم', done: false }
+                ],
+                noon: [
+                    { id: 'f3', text: 'حضور درس الكيمياء (من 2:30 إلى 7:00 مساءً)', done: false }
+                ],
+                night: [
+                    { id: 'f4', text: 'تفريغ الكيمياء فوراً (عصر الدماغ بالورقة والقلم)', done: false },
+                    { id: 'f5', text: 'حل 20 سؤال تثبيت مباشر على ما تم دراسته في الدرس', done: false }
+                ]
+            },
+            saturday: {
+                title: "خطة يوم السبت",
+                lessons: "درس رياضة (2:00 - 5:00) | الجيم: صدر وضهر (6:00 - 7:30)",
+                gym: "صدر وضهر (Chest & Back)",
+                dawn: [
+                    { id: 's1', text: 'فرم الكيمياء: حل 50 سؤال بأفكار متدرجة', done: false },
+                    { id: 's2', text: 'سماع ومشاهدة النص الأول من محاضرة الفيزياء', done: false }
+                ],
+                noon: [
+                    { id: 's3', text: 'حضور درس الرياضيات (2:00 إلى 5:00 مساءً)', done: false },
+                    { id: 's4', text: 'تمرين الجيم: صدر وضهر (6:00 إلى 7:30 مساءً)', done: false }
+                ],
+                night: [
+                    { id: 's5', text: 'تفريغ درس الرياضة والاستدعاء النشط للقوانين', done: false },
+                    { id: 's6', text: 'حل 30 سؤال رياضة (أفكار مباشرة ومتوسطة)', done: false }
+                ]
+            },
+            sunday: {
+                title: "خطة يوم الأحد",
+                lessons: "لا يوجد دروس | الجيم: كتف ودراع (2:30 - 4:00)",
+                gym: "كتف ودراع (Shoulders & Arms)",
+                dawn: [
+                    { id: 'su1', text: 'إنهاء الجزء المتبقي من محاضرة الفيزياء + حل 40 سؤال', done: false },
+                    { id: 'su2', text: 'استكمال حل أسئلة الرياضة للمستويات العليا', done: false }
+                ],
+                noon: [
+                    { id: 'su3', text: 'تمرين الجيم: كتف ودراع (2:30 إلى 4:00 عصراً)', done: false }
+                ],
+                night: [
+                    { id: 'su4', text: 'مراجعة أخطاء الأسبوع الماضي بالكامل من كشكول الأغلاط', done: false },
+                    { id: 'su5', text: 'حل 20 سؤال ميكس (رياضة + فيزياء)', done: false }
+                ]
+            },
+            monday: {
+                title: "خطة يوم الإثنين",
+                lessons: "لا يوجد دروس | الجيم: رجل (2:30 - 4:00)",
+                gym: "رجل (Legs)",
+                dawn: [
+                    { id: 'm1', text: 'حفظ كلمات اللغة الإنجليزية الجديدة + حل قطعتين فهم', done: false },
+                    { id: 'm2', text: 'مذاكرة وتطبيق نحو وبلاغة (اللغة العربية)', done: false }
+                ],
+                noon: [
+                    { id: 'm3', text: 'تمرين الجيم: أرجل (2:30 إلى 4:00 عصراً)', done: false }
+                ],
+                night: [
+                    { id: 'm4', text: 'التحضير لدرس الرياضة القادم (مراجعة القوانين)', done: false },
+                    { id: 'm5', text: 'حل 30 سؤال كيمياء تراكمي من فصول سابقة', done: false }
+                ]
+            },
+            tuesday: {
+                title: "خطة يوم الثلاثاء",
+                lessons: "درس رياضة (10:00 - 1:00) | فيزياء شهري (1:00 - 4:00) | الجيم: صدر وضهر",
+                gym: "صدر وضهر (Chest & Back)",
+                dawn: [
+                    { id: 'tu1', text: 'حضور درس الرياضيات (10:00 ص - 1:00 ظ)', done: false },
+                    { id: 'tu2', text: 'حضور مراجعة الفيزياء الشهرية (إن وجدت 1:00 - 4:00)', done: false }
+                ],
+                noon: [
+                    { id: 'tu3', text: 'تمرين الجيم: صدر وضهر (4:30 إلى 6:00 مساءً)', done: false }
+                ],
+                night: [
+                    { id: 'tu4', text: 'تفريغ درس الرياضة وحل 40 سؤال', done: false },
+                    { id: 'tu5', text: 'بدء مشاهدة محاضرة الفيزياء الجديدة', done: false }
+                ]
+            },
+            wednesday: {
+                title: "خطة يوم الأربعاء",
+                lessons: "درس إنجليزي (11:30 - 2:00) | الجيم: كتف ودراع (3:00 - 4:30)",
+                gym: "كتف ودراع (Shoulders & Arms)",
+                dawn: [
+                    { id: 'w1', text: 'استكمال محاضرة الفيزياء وحل 50 سؤال عليها', done: false },
+                    { id: 'w2', text: 'مراجعة شاملة لدرس الرياضيات الأخير', done: false }
+                ],
+                noon: [
+                    { id: 'w3', text: 'حضور درس اللغة الإنجليزية (11:30 ص - 2:00 ظ)', done: false },
+                    { id: 'w4', text: 'تمرين الجيم: كتف ودراع (3:00 إلى 4:30 عصراً)', done: false }
+                ],
+                night: [
+                    { id: 'w5', text: 'تفريغ درس الإنجليزي وحفظ الكلمات والجرامر', done: false },
+                    { id: 'w6', text: 'حل 50 سؤال إنجليزي شامل', done: false }
+                ]
+            },
+            thursday: {
+                title: "خطة يوم الخميس",
+                lessons: "درس عربي (5:00 - 7:00) | الجيم: رجل (2:30 - 4:00)",
+                gym: "رجل (Legs)",
+                dawn: [
+                    { id: 'th1', text: 'فرم متراكم: حل أسئلة مستويات عليا على الكيمياء والفيزياء', done: false }
+                ],
+                noon: [
+                    { id: 'th2', text: 'تمرين الجيم: أرجل (2:30 إلى 4:00 عصراً)', done: false },
+                    { id: 'th3', text: 'حضور درس اللغة العربية (5:00 إلى 7:00 مساءً)', done: false }
+                ],
+                night: [
+                    { id: 'th4', text: 'تفريغ درس العربي وحل 50 سؤال (أدب ونصوص متحررة)', done: false }
+                ]
+            }
+        };
+
+        let appData = {
+            campDay: 1,
+            schedule: JSON.parse(JSON.stringify(DEFAULT_SCHEDULE)),
+            sessions: [],
+            mistakes: [],
+            scratchpad: ""
+        };
+
+        let currentActiveDay = 'friday';
+        let currentMistakeFilter = 'all';
+
+        /* Long Session Timer Variables (Defaulted to 3 hours = 180 min) */
+        let timerInterval = null;
+        let timerSeconds = 180 * 60; // 3 Hours default max
+        let isTimerRunning = false;
+
+        window.onload = function() {
+            loadFromLocalStorage();
+            initCurrentDayOfWeek();
+            renderDashboard();
+            renderScheduleDay(currentActiveDay);
+            renderSessionsHistory();
+            renderMistakes();
+            document.getElementById('recallScratchpad').value = appData.scratchpad || "";
+            updateTimerDisplay();
+        };
+
+        function saveToLocalStorage() {
+            localStorage.setItem('camp100_data', JSON.stringify(appData));
+        }
+
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem('camp100_data');
+            if (saved) {
+                try {
+                    appData = JSON.parse(saved);
+                    if (!appData.schedule) appData.schedule = JSON.parse(JSON.stringify(DEFAULT_SCHEDULE));
+                } catch(e) {
+                    console.error("فشل قراءة البيانات المحلية", e);
+                }
+            }
+        }
+
+        /* JSON EXPORT & IMPORT FUNCTIONS */
+        function exportToJSON() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `camp100_backup_${new Date().toISOString().split('T')[0]}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+            showToast("تم تحميل ملف JSON بنجاح!", "fa-download text-emerald-400");
+        }
+
+        function importFromJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    if (importedData && importedData.schedule) {
+                        appData = importedData;
+                        saveToLocalStorage();
+                        initCurrentDayOfWeek();
+                        renderDashboard();
+                        renderScheduleDay(currentActiveDay);
+                        renderSessionsHistory();
+                        renderMistakes();
+                        document.getElementById('recallScratchpad').value = appData.scratchpad || "";
+                        showToast("تم استرجاع البيانات بنجاح!", "fa-upload text-amber-400");
+                    } else {
+                        showToast("ملف JSON غير صالح للمعسكر!", "fa-triangle-exclamation text-rose-500");
+                    }
+                } catch (err) {
+                    showToast("خطأ أثناء قراءة ملف JSON", "fa-triangle-exclamation text-rose-500");
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        function showToast(text, iconClass = "fa-circle-check text-cyan-400") {
+            const toast = document.getElementById('toastMessage');
+            document.getElementById('toastText').innerText = text;
+            document.getElementById('toastIcon').className = `fa-solid ${iconClass} text-base`;
+            
+            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.className = 'nav-btn px-3 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white hover:bg-slate-800 transition flex items-center gap-2';
+            });
+
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+            const activeNav = document.getElementById(`tab-${tabId}`);
+            if (activeNav) {
+                activeNav.className = 'nav-btn px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 shadow-md';
+            }
+        }
+
+        function changeCampDay(delta) {
+            appData.campDay = Math.max(1, Math.min(30, appData.campDay + delta));
+            saveToLocalStorage();
+            renderDashboard();
+            showToast(`أنت الآن في اليوم ${appData.campDay} من المعسكر!`);
+        }
+
+        function initCurrentDayOfWeek() {
+            const daysMap = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+            const todayIndex = new Date().getDay();
+            currentActiveDay = daysMap[todayIndex] || 'friday';
+        }
+
+        function renderDashboard() {
+            document.getElementById('campDayDisplay').innerText = appData.campDay;
+            const percent = ((appData.campDay / 30) * 100).toFixed(1);
+            document.getElementById('campProgressPercent').innerText = `${percent}%`;
+            document.getElementById('campProgressBar').style.width = `${percent}%`;
+
+            const todayStr = new Date().toLocaleDateString('ar-EG');
+            const todaySessions = appData.sessions.filter(s => s.date === todayStr);
+            
+            let totalSolved = 0;
+            let totalWrong = 0;
+            todaySessions.forEach(s => {
+                totalSolved += s.total;
+                totalWrong += s.wrong;
+            });
+
+            document.getElementById('dashQuestionsToday').innerText = totalSolved;
+            const accuracy = totalSolved > 0 ? (((totalSolved - totalWrong) / totalSolved) * 100).toFixed(1) : 0;
+            document.getElementById('dashAccuracyToday').innerText = `${accuracy}%`;
+
+            const activeMistakes = appData.mistakes.filter(m => m.status === 'review').length;
+            document.getElementById('dashMistakesCount').innerText = activeMistakes;
+
+            const dayNamesAr = {
+                friday: "الجمعة", saturday: "السبت", sunday: "الأحد",
+                monday: "الإثنين", tuesday: "الثلاثاء", wednesday: "الأربعاء", thursday: "الخميس"
+            };
+            document.getElementById('todayNameDisplay').innerText = dayNamesAr[currentActiveDay] || "الجمعة";
+            document.getElementById('dashGymSplit').innerText = appData.schedule[currentActiveDay]?.gym || "راحة";
+
+            const tasksContainer = document.getElementById('dashboardDailyTasks');
+            tasksContainer.innerHTML = '';
+
+            const dayData = appData.schedule[currentActiveDay];
+            if (dayData) {
+                const allTasks = [...dayData.dawn, ...dayData.noon, ...dayData.night];
+                if (allTasks.length === 0) {
+                    tasksContainer.innerHTML = `<p class="text-xs text-slate-500">لا يوجد مهام مسجلة لهذا اليوم.</p>`;
+                } else {
+                    allTasks.slice(0, 5).forEach(task => {
+                        const div = document.createElement('div');
+                        div.className = 'flex items-center gap-3 p-2.5 rounded-xl bg-slate-900/60 border border-slate-800/60';
+                        div.innerHTML = `
+                            <input type="checkbox" ${task.done ? 'checked' : ''} onchange="toggleTaskDone('${currentActiveDay}', '${task.id}')" class="w-4 h-4 rounded text-cyan-500 focus:ring-0 cursor-pointer" />
+                            <span class="text-xs ${task.done ? 'line-through text-slate-500' : 'text-slate-200'} font-tajawal">${task.text}</span>
+                        `;
+                        tasksContainer.appendChild(div);
+                    });
+                }
+            }
+        }
+
+        function selectScheduleDay(dayKey) {
+            currentActiveDay = dayKey;
+            document.querySelectorAll('.sday-btn').forEach(btn => {
+                btn.className = 'sday-btn flex-1 min-w-[100px] py-2.5 px-3 rounded-xl text-xs font-bold transition text-center text-slate-400 hover:bg-slate-800';
+            });
+            const activeBtn = document.getElementById(`sday-${dayKey}`);
+            if (activeBtn) {
+                activeBtn.className = 'sday-btn flex-1 min-w-[100px] py-2.5 px-3 rounded-xl text-xs font-bold transition text-center bg-cyan-500 text-slate-950 shadow-md';
+            }
+
+            renderScheduleDay(dayKey);
+            renderDashboard();
+        }
+
+        function renderScheduleDay(dayKey) {
+            const data = appData.schedule[dayKey];
+            if (!data) return;
+
+            document.getElementById('selectedDayTitle').innerText = data.title;
+            document.getElementById('selectedDayLessons').innerText = `الدروس: ${data.lessons}`;
+
+            renderTaskPeriod('dawn', data.dawn, dayKey);
+            renderTaskPeriod('noon', data.noon, dayKey);
+            renderTaskPeriod('night', data.night, dayKey);
+        }
+
+        function renderTaskPeriod(periodKey, taskList, dayKey) {
+            const container = document.getElementById(`tasks-${periodKey}`);
+            container.innerHTML = '';
+
+            if (!taskList || taskList.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-500 font-tajawal">لا يوجد مهام.</p>`;
+                return;
+            }
+
+            taskList.forEach(task => {
+                const item = document.createElement('div');
+                item.className = 'flex items-start justify-between gap-2 p-3 rounded-xl bg-slate-900/80 border border-slate-800/80 group';
+                item.innerHTML = `
+                    <div class="flex items-start gap-2.5 flex-1">
+                        <input type="checkbox" id="chk-${task.id}" ${task.done ? 'checked' : ''} onchange="toggleTaskDone('${dayKey}', '${task.id}')" class="task-checkbox mt-0.5 w-4 h-4 rounded text-cyan-500 bg-slate-950 border-slate-700 focus:ring-0 cursor-pointer" />
+                        <label for="chk-${task.id}" class="text-xs font-tajawal leading-relaxed text-slate-200 cursor-pointer select-none">${task.text}</label>
+                    </div>
+                    <button onclick="deleteTask('${dayKey}', '${task.id}')" class="text-slate-600 hover:text-rose-400 text-xs opacity-0 group-hover:opacity-100 transition">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function toggleTaskDone(dayKey, taskId) {
+            const dayObj = appData.schedule[dayKey];
+            ['dawn', 'noon', 'night'].forEach(period => {
+                const task = dayObj[period].find(t => t.id === taskId);
+                if (task) task.done = !task.done;
+            });
+            saveToLocalStorage();
+            renderScheduleDay(dayKey);
+            renderDashboard();
+        }
+
+        function deleteTask(dayKey, taskId) {
+            const dayObj = appData.schedule[dayKey];
+            ['dawn', 'noon', 'night'].forEach(period => {
+                dayObj[period] = dayObj[period].filter(t => t.id !== taskId);
+            });
+            saveToLocalStorage();
+            renderScheduleDay(dayKey);
+            renderDashboard();
+            showToast("تم حذف المهمة");
+        }
+
+        function openAddTaskModal() {
+            document.getElementById('modalAddTask').classList.remove('hidden');
+        }
+        function closeAddTaskModal() {
+            document.getElementById('modalAddTask').classList.add('hidden');
+        }
+
+        function handleAddNewTask(e) {
+            e.preventDefault();
+            const period = document.getElementById('newTaskPeriod').value;
+            const text = document.getElementById('newTaskText').value.trim();
+
+            if (!text) return;
+
+            const newTask = {
+                id: 'custom_' + Date.now(),
+                text: text,
+                done: false
+            };
+
+            appData.schedule[currentActiveDay][period].push(newTask);
+            saveToLocalStorage();
+            renderScheduleDay(currentActiveDay);
+            renderDashboard();
+            closeAddTaskModal();
+            document.getElementById('newTaskText').value = '';
+            showToast("تم إضافة المهمة بنجاح!");
+        }
+
+        function openLogSessionModal() {
+            switchTab('calculator');
+        }
+
+        function calculatePerformance(e) {
+            e.preventDefault();
+            const subject = document.getElementById('calcSubject').value;
+            const total = parseInt(document.getElementById('calcTotal').value);
+            const wrong = parseInt(document.getElementById('calcWrong').value);
+
+            if (wrong > total) {
+                showToast("عدد الإجابات الخاطئة أكبر من الإجمالي!", "fa-triangle-exclamation text-rose-500");
+                return;
+            }
+
+            const wrongRatio = (wrong / total) * 100;
+            const accuracy = 100 - wrongRatio;
+
+            let status = 'excellent';
+            let title = "🟢 ممتاز! تغطية وإتقان عالي جداً";
+            let msg = "استيعابك للدرس ممتاز جداً. استمر في الحل بنفس الارتياح، وسجل فقط الأسئلة الخاطئة البسيطة في كشكول الأغلاط لضمان عدم نسيان الفكرة.";
+            let badgeClass = "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+            let iconClass = "bg-emerald-500/20 text-emerald-400 fa-solid fa-circle-check";
+            let boxBorder = "border-l-emerald-500";
+
+            if (wrongRatio >= 20 && wrongRatio <= 35) {
+                status = 'good';
+                title = "🟡 جيد! محتاج تراجع تطبيقات القوانين والأفكار المتوسطة";
+                msg = "أنت فاهم الأساس، بس عندك مشكلة في أفكار المسائل أو تطبيق القوانين المركبة. راجع النقاط اللي غلطت فيها بس وادرس الفخاخ الخاصة بيها.";
+                badgeClass = "bg-amber-500/20 text-amber-400 border border-amber-500/30";
+                iconClass = "bg-amber-500/20 text-amber-400 fa-solid fa-triangle-exclamation";
+                boxBorder = "border-l-amber-500";
+            } else if (wrongRatio > 35) {
+                status = 'stop';
+                title = "🔴 ستوب! متكملش حل.. ارجع للشرح فوراً";
+                msg = "نسبة خطأك تعدت 40%! ده معناه إن الأساس غير موجود أو الشرح لم يستوعب. متضيعش وقت في الحل دلوقتي، اقفل كتاب الأسئلة وارجع اسمع شرح الدرس وقواعده من الأول.";
+                badgeClass = "bg-rose-500/20 text-rose-400 border border-rose-500/30";
+                iconClass = "bg-rose-500/20 text-rose-400 fa-solid fa-ban";
+                boxBorder = "border-l-rose-500";
+            }
+
+            const resBox = document.getElementById('calcResultBox');
+            resBox.className = `glass-panel p-6 rounded-2xl ${boxBorder}`;
+            resBox.classList.remove('hidden');
+
+            document.getElementById('resultIcon').className = `w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shrink-0 ${iconClass}`;
+            document.getElementById('resultBadge').className = `inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 ${badgeClass}`;
+            document.getElementById('resultBadge').innerText = status === 'excellent' ? 'استيعاب ممتازة' : status === 'good' ? 'استيعاب متوسط' : 'إنذار خطأ مرتفع';
+            document.getElementById('resultTitle').innerText = title;
+            document.getElementById('resultMessage').innerText = msg;
+            document.getElementById('resAccuracyVal').innerText = `${accuracy.toFixed(1)}%`;
+            document.getElementById('resErrorVal').innerText = `${wrongRatio.toFixed(1)}%`;
+
+            const session = {
+                id: 'sess_' + Date.now(),
+                date: new Date().toLocaleDateString('ar-EG'),
+                time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
+                subject: subject,
+                total: total,
+                wrong: wrong,
+                accuracy: accuracy.toFixed(1),
+                status: status
+            };
+
+            appData.sessions.unshift(session);
+            saveToLocalStorage();
+            renderSessionsHistory();
+            renderDashboard();
+
+            showToast("تم تسجيل تقييم الجلسة بنجاح!");
+        }
+
+        function renderSessionsHistory() {
+            const list = document.getElementById('sessionsHistoryList');
+            list.innerHTML = '';
+
+            if (appData.sessions.length === 0) {
+                list.innerHTML = `<p class="text-xs text-slate-500 font-tajawal">لم يتم تسجيل أي جلسة حل حتى الآن.</p>`;
+                return;
+            }
+
+            appData.sessions.forEach(s => {
+                const div = document.createElement('div');
+                div.className = 'flex items-center justify-between p-3 rounded-xl bg-slate-900/70 border border-slate-800 text-xs';
+                
+                let badgeColor = 'text-emerald-400';
+                if (s.status === 'good') badgeColor = 'text-amber-400';
+                if (s.status === 'stop') badgeColor = 'text-rose-400';
+
+                div.innerHTML = `
+                    <div>
+                        <span class="font-bold text-white block">${s.subject}</span>
+                        <span class="text-[10px] text-slate-500">${s.date} - ${s.time}</span>
+                    </div>
+                    <div class="text-left">
+                        <span class="font-bold ${badgeColor} block">دقة: ${s.accuracy}%</span>
+                        <span class="text-[10px] text-slate-400">${s.total - s.wrong} صح / ${s.wrong} غلط من أصل ${s.total}</span>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function openAddMistakeModal() {
+            document.getElementById('modalAddMistake').classList.remove('hidden');
+        }
+        function closeAddMistakeModal() {
+            document.getElementById('modalAddMistake').classList.add('hidden');
+        }
+
+        function handleAddNewMistake(e) {
+            e.preventDefault();
+            const subject = document.getElementById('mSubj').value;
+            const category = document.getElementById('mCategory').value;
+            const source = document.getElementById('mSource').value.trim();
+            const trap = document.getElementById('mTrap').value.trim();
+            const bug = document.getElementById('mBug').value.trim();
+            const golden = document.getElementById('mGolden').value.trim();
+
+            const entry = {
+                id: 'mst_' + Date.now(),
+                date: new Date().toLocaleDateString('ar-EG'),
+                subject: subject,
+                category: category,
+                source: source,
+                trap: trap,
+                bug: bug,
+                golden: golden,
+                status: 'review'
+            };
+
+            appData.mistakes.unshift(entry);
+            saveToLocalStorage();
+            renderMistakes();
+            renderDashboard();
+            closeAddMistakeModal();
+
+            document.getElementById('mSource').value = '';
+            document.getElementById('mTrap').value = '';
+            document.getElementById('mBug').value = '';
+            document.getElementById('mGolden').value = '';
+
+            showToast("تم تسجيل الغلطة في الكشكول!");
+        }
+
+        function filterMistakes(sub) {
+            currentMistakeFilter = sub;
+            document.querySelectorAll('.mfilter-btn').forEach(btn => {
+                btn.className = 'mfilter-btn px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:bg-slate-800';
+            });
+            const activeBtn = document.getElementById(`mfilter-${sub}`);
+            if (activeBtn) activeBtn.className = 'mfilter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-cyan-500 text-slate-950';
+
+            renderMistakes();
+        }
+
+        function renderMistakes() {
+            const grid = document.getElementById('mistakesGrid');
+            grid.innerHTML = '';
+
+            let filtered = appData.mistakes;
+            if (currentMistakeFilter !== 'all') {
+                filtered = filtered.filter(m => m.subject === currentMistakeFilter);
+            }
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full glass-panel p-8 text-center rounded-2xl">
+                        <i class="fa-solid fa-book-open text-4xl text-slate-600 mb-3 block"></i>
+                        <p class="text-sm text-slate-400 font-tajawal">لا يوجد أخطاء مسجلة هنا حالياً.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(m => {
+                const card = document.createElement('div');
+                const isUnderstood = m.status === 'understood';
+                card.className = `glass-panel p-5 rounded-2xl border-l-4 ${isUnderstood ? 'border-l-emerald-500 opacity-75' : 'border-l-rose-500'} space-y-3 relative`;
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2.5 py-1 rounded-lg bg-slate-800 text-xs font-bold text-cyan-400">${m.subject}</span>
+                            <span class="px-2 py-0.5 rounded-md bg-rose-500/10 text-rose-400 text-[10px] font-bold border border-rose-500/20">${m.category}</span>
+                        </div>
+                        <button onclick="deleteMistake('${m.id}')" class="text-slate-500 hover:text-rose-400 text-xs">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+
+                    <div class="text-xs text-slate-400 font-bold">
+                        <i class="fa-solid fa-bookmark text-amber-400 ml-1"></i> ${m.source}
+                    </div>
+
+                    <div class="space-y-2 text-xs font-tajawal pt-2 border-t border-slate-800">
+                        <div class="bg-amber-500/10 p-2.5 rounded-xl border border-amber-500/20 text-amber-300">
+                            <strong>الفخ (The Trap):</strong> ${m.trap}
+                        </div>
+                        <div class="bg-rose-500/10 p-2.5 rounded-xl border border-rose-500/20 text-rose-300">
+                            <strong>تفكيري الغلط (Bug):</strong> ${m.bug}
+                        </div>
+                        <div class="bg-emerald-500/10 p-2.5 rounded-xl border border-emerald-500/20 text-emerald-300">
+                            <strong>القاعدة الذهبية:</strong> ${m.golden}
+                        </div>
+                    </div>
+
+                    <div class="pt-2 flex items-center justify-between text-xs">
+                        <span class="text-[10px] text-slate-500">${m.date}</span>
+                        <button onclick="toggleMistakeStatus('${m.id}')" class="px-3 py-1.5 rounded-lg ${isUnderstood ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800 text-slate-300'} hover:bg-slate-700 font-bold transition">
+                            ${isUnderstood ? '<i class="fa-solid fa-check ml-1"></i> تم الفهم والتغلب عليه' : 'يحتاج مراجعة'}
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function toggleMistakeStatus(id) {
+            const m = appData.mistakes.find(item => item.id === id);
+            if (m) {
+                m.status = m.status === 'understood' ? 'review' : 'understood';
+                saveToLocalStorage();
+                renderMistakes();
+                renderDashboard();
+            }
+        }
+
+        function deleteMistake(id) {
+            appData.mistakes = appData.mistakes.filter(item => item.id !== id);
+            saveToLocalStorage();
+            renderMistakes();
+            renderDashboard();
+            showToast("تم حذف السؤال من الكشكول");
+        }
+
+        function saveScratchpad() {
+            const val = document.getElementById('recallScratchpad').value;
+            appData.scratchpad = val;
+            saveToLocalStorage();
+        }
+
+        function clearScratchpad() {
+            document.getElementById('recallScratchpad').value = '';
+            appData.scratchpad = '';
+            saveToLocalStorage();
+            showToast("تم مسح المسودة");
+        }
+
+        function copyScratchpadText() {
+            const val = document.getElementById('recallScratchpad').value;
+            if (!val) return;
+            const textarea = document.createElement('textarea');
+            textarea.value = val;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            showToast("تم نسخ النص إلى الحافظة!");
+        }
+
+        /* Long Focus Timer Functions (Formatted for Hours & Minutes) */
+        function setTimerPreset(minutes) {
+            pauseTimer();
+            timerSeconds = minutes * 60;
+            updateTimerDisplay();
+            const hrs = minutes / 60;
+            document.getElementById('timerStatus').innerText = `جلسة مضبوطة على ${minutes} دقيقة (${hrs} ساعة)`;
+        }
+
+        function updateTimerDisplay() {
+            const hrs = Math.floor(timerSeconds / 3600);
+            const mins = Math.floor((timerSeconds % 3600) / 60);
+            const secs = timerSeconds % 60;
+
+            const hrsStr = hrs.toString().padStart(2, '0');
+            const minsStr = mins.toString().padStart(2, '0');
+            const secsStr = secs.toString().padStart(2, '0');
+
+            document.getElementById('timerDisplay').innerText = `${hrsStr}:${minsStr}:${secsStr}`;
+        }
+
+        function toggleTimer() {
+            if (isTimerRunning) {
+                pauseTimer();
+            } else {
+                startTimer();
+            }
+        }
+
+        function startTimer() {
+            isTimerRunning = true;
+            document.getElementById('btnStartTimer').innerHTML = `<i class="fa-solid fa-pause"></i> <span>إيقاف مؤقت</span>`;
+            document.getElementById('btnStartTimer').className = 'flex-1 py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition shadow-lg flex items-center justify-center gap-2';
+            document.getElementById('timerStatus').innerText = "الجلسة شغالة.. اقفل موبايلك وركز تماماً في الفرم!";
+
+            timerInterval = setInterval(() => {
+                if (timerSeconds > 0) {
+                    timerSeconds--;
+                    updateTimerDisplay();
+                } else {
+                    pauseTimer();
+                    playTimerAlarm();
+                    showToast("انتهت الجلسة الماراثونية بنجاح! خذ قسطاً مستحقاً من الراحة", "fa-bell text-amber-400");
+                    document.getElementById('timerStatus').innerText = "اكتملت الجلسة الماراثونية!";
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            isTimerRunning = false;
+            clearInterval(timerInterval);
+            document.getElementById('btnStartTimer').innerHTML = `<i class="fa-solid fa-play"></i> <span>متابعة الجلسة</span>`;
+            document.getElementById('btnStartTimer').className = 'flex-1 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition shadow-lg flex items-center justify-center gap-2';
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            timerSeconds = 180 * 60; // Reset back to 3 hours
+            updateTimerDisplay();
+            document.getElementById('timerStatus').innerText = "جاهز للبدء (3 ساعات)";
+        }
+
+        function playTimerAlarm() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 1.5);
+            } catch(e) {
+                console.log("Audio alert dynamic trigger fallback.");
+            }
+        }
+    </script>
+</body>
+</html>
